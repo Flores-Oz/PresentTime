@@ -2,7 +2,7 @@
 import pygame
 import sys
 
-# Animación de escribir el nombre
+# Animación de escribir el nombre y el ComboBox
 def animate_name(name, combo_value):
     pygame.init()
 
@@ -12,16 +12,18 @@ def animate_name(name, combo_value):
 
     # Fuente
     font = pygame.font.SysFont("Arial", 74)
+    combo_font = pygame.font.SysFont("Arial", 36)  # Fuente para el ComboBox
 
     # Variables para la animación
     current_text = ""
+    combo_text = ""
     write_speed = 300  # Velocidad de escritura (en milisegundos)
     last_update_time = pygame.time.get_ticks()
 
     # Tamaños de ventana
     WIDTH, HEIGHT = 800, 600
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Animación de Escribir Nombre")
+    pygame.display.set_caption("Animación de Escribir Nombre y ComboBox")
 
     # Bucle principal
     clock = pygame.time.Clock()
@@ -38,16 +40,23 @@ def animate_name(name, combo_value):
             current_text += name[len(current_text)]
             last_update_time = current_time
 
+        # Animación de escribir el combo_value
+        if len(combo_text) < len(combo_value):
+            if current_time - last_update_time >= write_speed:
+                combo_text += combo_value[len(combo_text)]
+                last_update_time = current_time
+
         # Dibujar pantalla
         screen.fill(BLACK)
+
+        # Mostrar el nombre animado
         text_surface = font.render(current_text, True, WHITE)
-        text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 3))  # Ajusté la posición en el eje Y
         screen.blit(text_surface, text_rect)
-        
-         # Mostrar el valor del ComboBox debajo del nombre
-        combo_font = pygame.font.SysFont("Arial", 36)
-        combo_text_surface = combo_font.render(combo_value, True, WHITE)
-        combo_text_rect = combo_text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+
+        # Mostrar el valor del ComboBox animado
+        combo_text_surface = combo_font.render(combo_text, True, WHITE)  # Eliminé el prefijo "Selección: "
+        combo_text_rect = combo_text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))  # Ajusté la posición en el eje Y
         screen.blit(combo_text_surface, combo_text_rect)
 
         pygame.display.flip()
