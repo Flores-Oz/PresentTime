@@ -69,7 +69,7 @@ def get_name():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:  # Si presiona Enter, retorna el nombre
                         if input_text.strip():
-                            return input_text
+                            return input_text, combo_selected
                     elif event.key == pygame.K_BACKSPACE:  # Borra el último carácter
                         input_text = input_text[:-1]
                     else:

@@ -3,7 +3,7 @@ import pygame
 import sys
 
 # Animación de escribir el nombre
-def animate_name(name):
+def animate_name(name, combo_value):
     pygame.init()
 
     # Colores
@@ -43,6 +43,12 @@ def animate_name(name):
         text_surface = font.render(current_text, True, WHITE)
         text_rect = text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         screen.blit(text_surface, text_rect)
+        
+         # Mostrar el valor del ComboBox debajo del nombre
+        combo_font = pygame.font.SysFont("Arial", 36)
+        combo_text_surface = combo_font.render(combo_value, True, WHITE)
+        combo_text_rect = combo_text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+        screen.blit(combo_text_surface, combo_text_rect)
 
         pygame.display.flip()
         clock.tick(60)
