@@ -10,8 +10,9 @@ def animate_name(name1, combo_value):
     WHITE = (255, 255, 255)
 
     # Fuente
-    font = pygame.font.SysFont("Arial", 74)
-    combo_font = pygame.font.SysFont("Arial", 36)  # Fuente para el ComboBox
+    font_path = "fonts/Ballet.ttf" 
+    font = pygame.font.Font(font_path, 74)
+    combo_font = pygame.font.Font(font_path, 66)  # Fuente para el ComboBox
 
     # Variables para la animación
     fixed_name_text = ""  # Para el nombre fijo
@@ -24,6 +25,20 @@ def animate_name(name1, combo_value):
     WIDTH, HEIGHT = 800, 600
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Happy New Year")
+    
+     # Cambiar el ícono de la ventana
+    icon_path = "logo/legend.png"  # Cambia esta ruta por tu archivo .ico
+    try:
+        icon = pygame.image.load(icon_path)
+        pygame.display.set_icon(icon)
+    except FileNotFoundError:
+        print(f"No se encontró el ícono en {icon_path}. Se usará el predeterminado.")
+
+    # Cargar el archivo MIDI desde la carpeta Song
+    pygame.mixer.music.load("Song/Decade.mid")
+    # Reproducir el archivo
+    pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
+
 
     # Texto fijo para el nombre
     fixed_name = "Happy New Year"  # Este es el texto fijo que se va a mostrar
@@ -76,13 +91,13 @@ def animate_name(name1, combo_value):
         # Mostrar el valor del ComboBox animado
         if state == "combo" or state == "name":
             combo_text_surface = combo_font.render(combo_text, True, WHITE)
-            combo_text_rect = combo_text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+            combo_text_rect = combo_text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 40))
             screen.blit(combo_text_surface, combo_text_rect)
 
         # Mostrar el name1 animado
         if state == "name":
             name_text_surface = font.render(name_text, True, WHITE)
-            name_text_rect = name_text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 200))
+            name_text_rect = name_text_surface.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 140))
             screen.blit(name_text_surface, name_text_rect)
 
         pygame.display.flip()
