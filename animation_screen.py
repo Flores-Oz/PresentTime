@@ -52,6 +52,7 @@ def animate_name(name1, combo_value, width=800, height=800):
     # Fuente
     font_path = "fonts/Ballet.ttf"
     font = pygame.font.Font(font_path, 74)
+    font1 =pygame.font.SysFont('Arial', 16)
     combo_font = pygame.font.Font(font_path, 66)
 
     # Variables para la animación
@@ -105,6 +106,10 @@ def animate_name(name1, combo_value, width=800, height=800):
     image_shown = False  # Bandera para saber si mostrar la imagen
     button_shown = False  # Bandera para saber si mostrar el botón
     button_rect = pygame.Rect(50, 750, 200, 40)  # Botón en la parte inferior izquierda
+    ruta_texto = ""
+    image_path = None
+    ruta_mostrada_time = None  # Variable para controlar el tiempo que se muestra la ruta
+    
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -116,6 +121,7 @@ def animate_name(name1, combo_value, width=800, height=800):
                 if button_rect.collidepoint(event.pos):
                     image_path = guardar_imagen_en_escritorio()  # Guardar la imagen cuando se hace clic en el botón
                     ruta_texto = f"Imagen guardada en: {image_path}"
+                    ruta_mostrada_time = pygame.time.get_ticks()  # Establecer el tiempo de cuando se mostró la ruta
 
         # Actualiza tiempo y texto
         current_time = pygame.time.get_ticks()
@@ -176,11 +182,17 @@ def animate_name(name1, combo_value, width=800, height=800):
             button_text_rect = button_text.get_rect(center=button_rect.center)
             screen.blit(button_text, button_text_rect)
             
-        # Mostrar la ruta donde se guardó la imagen
-        if 'image_path' in locals():  # Si se ha guardado la imagen
-            ruta_surface = font.render(ruta_texto, True, WHITE)
+        # Mostrar la ruta donde se guardó la imagen (y desaparecerla después de 3 segundos)
+        if image_path and ruta_mostrada_time:
+            # Mostrar la ruta
+            ruta_surface = font1.render(ruta_texto, True, WHITE)
             ruta_rect = ruta_surface.get_rect(center=(800 // 2, 750))  # Ajuste de la posición de la ruta
             screen.blit(ruta_surface, ruta_rect)
+
+            # Eliminar mensaje después de 3 segundos
+            if current_time - ruta_mostrada_time >= 3000:  # 3000 milisegundos = 3 segundos
+                ruta_texto = ""
+                ruta_mostrada_time = None
 
         pygame.display.flip()
         clock.tick(60)
