@@ -1,7 +1,7 @@
 import pygame
 import sys
 import random
-import time
+import os
 
 # Configuración inicial
 pygame.init()
@@ -69,10 +69,6 @@ def animate_name(name1, combo_value, width=800, height=800):
     except FileNotFoundError:
         print(f"No se encontró el ícono en {icon_path}. Se usará el predeterminado.")
 
-    # Cargar el archivo MIDI desde la carpeta Song
-    #pygame.mixer.music.load("Song/Decade.mid")
-    #pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
-
     # Texto fijo para el nombre
     fixed_name = "Happy New Year"  # Este es el texto fijo que se va a mostrar
 
@@ -93,14 +89,33 @@ def animate_name(name1, combo_value, width=800, height=800):
     # Cargar la imagen inicial
     image = cargar_imagen(combo_value)
 
+    # Función para guardar la captura de pantalla en el escritorio
+    def guardar_imagen_en_escritorio():
+        # Obtener la ruta de la carpeta de videos
+         videos_path = os.path.join(os.path.expanduser("~"), "Videos", "HappyNewYear.png")
+    
+         # Guardar la imagen
+         pygame.image.save(screen, videos_path)
+         print(f"Imagen guardada en: {videos_path}")
+    
+         return videos_path  # Devuelve la ruta de la imagen guardada para mostrarla
+
     # Bucle principal
     state = "fixed_name"  # Estado inicial
     image_shown = False  # Bandera para saber si mostrar la imagen
+    button_shown = False  # Bandera para saber si mostrar el botón
+    button_rect = pygame.Rect(50, 750, 200, 40)  # Botón en la parte inferior izquierda
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+            # Detectar clic en el botón
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if button_rect.collidepoint(event.pos):
+                    image_path = guardar_imagen_en_escritorio()  # Guardar la imagen cuando se hace clic en el botón
+                    ruta_texto = f"Imagen guardada en: {image_path}"
 
         # Actualiza tiempo y texto
         current_time = pygame.time.get_ticks()
@@ -126,6 +141,7 @@ def animate_name(name1, combo_value, width=800, height=800):
                     last_update_time = current_time
             if len(name_text) == len(name1):
                 image_shown = True  # Muestra la imagen después de que termine la animación
+                button_shown = True  # Muestra el botón después de la animación
 
         # Dibujar fondo y estrellas
         screen.fill(BLACK)
@@ -153,8 +169,21 @@ def animate_name(name1, combo_value, width=800, height=800):
             image_rect = image.get_rect(center=(800 // 2, 800 // 1.25))  # Colocar la imagen más abajo
             screen.blit(image, image_rect)
 
+        # Mostrar el botón solo después de la animación
+        if button_shown:
+            # Dibujar solo el texto del botón, sin fondo
+            button_text = pygame.font.Font(font_path, 36).render("Descargar imagen", True, (255, 255, 255))
+            button_text_rect = button_text.get_rect(center=button_rect.center)
+            screen.blit(button_text, button_text_rect)
+            
+        # Mostrar la ruta donde se guardó la imagen
+        if 'image_path' in locals():  # Si se ha guardado la imagen
+            ruta_surface = font.render(ruta_texto, True, WHITE)
+            ruta_rect = ruta_surface.get_rect(center=(800 // 2, 750))  # Ajuste de la posición de la ruta
+            screen.blit(ruta_surface, ruta_rect)
+
         pygame.display.flip()
         clock.tick(60)
 
 # Ejecuta la animación
-#animate_name("Name", "Best Wishes")
+#animate_name("Oscar", "Best Wishes")
