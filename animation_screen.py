@@ -4,7 +4,9 @@ import random
 import time
 
 # Configuración inicial
-screen = pygame.display.set_mode((400, 400))
+pygame.init()
+screen = pygame.display.set_mode((800, 800))
+clock = pygame.time.Clock()
 
 # Configuración de estrellas
 num_stars = 500
@@ -68,14 +70,21 @@ def animate_name(name1, combo_value, width=800, height=800):
         print(f"No se encontró el ícono en {icon_path}. Se usará el predeterminado.")
 
     # Cargar el archivo MIDI desde la carpeta Song
-    #pygame.mixer.music.load("Song/Decade.mid")
-    #pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
+    pygame.mixer.music.load("Song/Decade.mid")
+    pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
 
     # Texto fijo para el nombre
     fixed_name = "Happy New Year"  # Este es el texto fijo que se va a mostrar
 
+    # Cargar la imagen
+    try:
+        image = pygame.image.load("img/Gato.png")
+    except pygame.error:
+        print("No se pudo cargar la imagen desde img/Gato.png.")
+
     # Bucle principal
     state = "fixed_name"  # Estado inicial
+    image_shown = False  # Bandera para saber si mostrar la imagen
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -104,6 +113,8 @@ def animate_name(name1, combo_value, width=800, height=800):
                 if current_time - last_update_time >= write_speed:
                     name_text += name1[len(name_text)]
                     last_update_time = current_time
+            if len(name_text) == len(name1):
+                image_shown = True  # Muestra la imagen después de que termine la animación
 
         # Dibujar fondo y estrellas
         screen.fill(BLACK)
@@ -111,23 +122,28 @@ def animate_name(name1, combo_value, width=800, height=800):
 
         # Mostrar el nombre fijo animado
         fixed_name_surface = font.render(fixed_name_text, True, WHITE)
-        fixed_name_rect = fixed_name_surface.get_rect(center=(800 // 2, 800 // 3))
+        fixed_name_rect = fixed_name_surface.get_rect(center=(800 // 2, 800 // 5))  # Más espacio arriba
         screen.blit(fixed_name_surface, fixed_name_rect)
 
         # Mostrar el valor del ComboBox animado
         if state == "combo" or state == "name":
             combo_text_surface = combo_font.render(combo_text, True, WHITE)
-            combo_text_rect = combo_text_surface.get_rect(center=(800 // 2, 800 // 2 + 40))
+            combo_text_rect = combo_text_surface.get_rect(center=(800 // 2, 800 // 2.5))  # Más espacio arriba
             screen.blit(combo_text_surface, combo_text_rect)
 
         # Mostrar el name1 animado
         if state == "name":
             name_text_surface = font.render(name_text, True, WHITE)
-            name_text_rect = name_text_surface.get_rect(center=(800 // 2, 800 // 2 + 140))
+            name_text_rect = name_text_surface.get_rect(center=(800 // 2, 800 // 1.75))  # Más espacio arriba
             screen.blit(name_text_surface, name_text_rect)
+
+        # Mostrar la imagen solo después de la animación
+        if image_shown:
+            image_rect = image.get_rect(center=(800 // 2, 800 // 1.25))  # Colocar la imagen más abajo
+            screen.blit(image, image_rect)
 
         pygame.display.flip()
         clock.tick(60)
 
 # Ejecuta la animación
-# animate_name("Name", "Best Wishes")
+animate_name("Name", "Best Wishes")
