@@ -68,8 +68,8 @@ def animate_name(name1, combo_value, width=800, height=800):
         print(f"No se encontró el ícono en {icon_path}. Se usará el predeterminado.")
 
     # Cargar el archivo MIDI desde la carpeta Song
-    pygame.mixer.music.load("Song/Decade.mid")
-    pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
+    #pygame.mixer.music.load("Song/Decade.mid")
+    #pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
 
     # Texto fijo para el nombre
     fixed_name = "Happy New Year"  # Este es el texto fijo que se va a mostrar
@@ -130,4 +130,4 @@ def animate_name(name1, combo_value, width=800, height=800):
         clock.tick(60)
 
 # Ejecuta la animación
-#animate_name("Name", "Best Wishes")
+# animate_name("Name", "Best Wishes")
