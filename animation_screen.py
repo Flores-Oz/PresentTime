@@ -2,6 +2,20 @@ import pygame
 import sys
 import random
 import os
+import platform
+
+# Función para obtener la ruta correcta de los recursos
+def resource_path(relative_path):
+    """Obtiene la ruta correcta al recurso en diferentes sistemas operativos y entornos."""
+    try:
+        # Para aplicaciones empaquetadas, obtener la ruta del recurso dentro del paquete
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relative_path)
+        # Para un entorno normal, usar la ruta relativa
+        return os.path.join(os.path.dirname(__file__), relative_path)
+    except Exception as e:
+        print(f"Error al obtener la ruta del recurso: {e}")
+        return relative_path
 
 # Configuración inicial
 pygame.init()
@@ -50,9 +64,9 @@ def animate_name(name1, combo_value, width=800, height=800):
     WHITE = (255, 255, 255)
 
     # Fuente
-    font_path = "fonts/Ballet.ttf"
+    font_path = resource_path("fonts/Ballet.ttf")  # Usar resource_path para obtener la ruta de la fuente
     font = pygame.font.Font(font_path, 74)
-    font1 =pygame.font.SysFont('Arial', 16)
+    font1 = pygame.font.SysFont('Arial', 16)
     combo_font = pygame.font.Font(font_path, 66)
 
     # Variables para la animación
@@ -63,7 +77,7 @@ def animate_name(name1, combo_value, width=800, height=800):
     last_update_time = pygame.time.get_ticks()
 
     # Cambiar el ícono de la ventana
-    icon_path = "logo/legend.png"
+    icon_path = resource_path("logo/legend.png")  # Usar resource_path para la ruta del ícono
     try:
         icon = pygame.image.load(icon_path)
         pygame.display.set_icon(icon)
@@ -75,9 +89,9 @@ def animate_name(name1, combo_value, width=800, height=800):
 
     # Diccionario de imágenes basado en el valor del ComboBox
     images = {
-        "Michi Town": "img/Gato.png",  # Ruta de la imagen para "Best Wishes"
-        "Culto de Paquito": "img/Pacolio.png",  # Ruta de la imagen para "Success"
-        "Love": "img/Love.png",  # Ruta de la imagen para "Love"
+        "Michi Town": resource_path("img/Gato.png"),  # Usar resource_path para las rutas de las imágenes
+        "Culto de Paquito": resource_path("img/Pacolio.png"),
+        "Love": resource_path("img/Love.png"),
     }
 
     # Intentar cargar la imagen correspondiente según el valor del ComboBox
@@ -93,13 +107,13 @@ def animate_name(name1, combo_value, width=800, height=800):
     # Función para guardar la captura de pantalla en el escritorio
     def guardar_imagen_en_escritorio():
         # Obtener la ruta de la carpeta de videos
-         videos_path = os.path.join(os.path.expanduser("~"), "Videos", "HappyNewYear.png")
+        videos_path = os.path.join(os.path.expanduser("~"), "Videos", "HappyNewYear.png")
     
-         # Guardar la imagen
-         pygame.image.save(screen, videos_path)
-         print(f"Imagen guardada en: {videos_path}")
+        # Guardar la imagen
+        pygame.image.save(screen, videos_path)
+        print(f"Imagen guardada en: {videos_path}")
     
-         return videos_path  # Devuelve la ruta de la imagen guardada para mostrarla
+        return videos_path  # Devuelve la ruta de la imagen guardada para mostrarla
 
     # Bucle principal
     state = "fixed_name"  # Estado inicial
@@ -198,4 +212,4 @@ def animate_name(name1, combo_value, width=800, height=800):
         clock.tick(60)
 
 # Ejecuta la animación
-#animate_name("Oscar", "Best Wishes")
+# animate_name("Oscar", "Best Wishes")

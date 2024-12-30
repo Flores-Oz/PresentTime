@@ -1,5 +1,17 @@
 import pygame
 import sys
+import os
+
+# Función para obtener la ruta de los recursos
+def resource_path(relative_path):
+    """Obtiene la ruta correcta al recurso, ya sea desde el archivo empaquetado o el directorio de trabajo."""
+    try:
+        # PyInstaller crea una carpeta temporal para los archivos en el directorio '_MEIPASS'
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")  # Si no está empaquetado, usa el directorio actual
+    
+    return os.path.join(base_path, relative_path)
 
 # Función para obtener el nombre desde la pantalla de entrada
 def get_name():
@@ -13,10 +25,11 @@ def get_name():
     BLUE = (0, 120, 215)
 
     # Fuente
-    font_path = "fonts/RubikViny.ttf"  
+    font_path = resource_path("fonts/RubikViny.ttf")  # Usamos la función para obtener la ruta correcta
     font = pygame.font.Font(font_path, 26)
     combo_font = pygame.font.Font(font_path, 20)  # Puedes ajustar el tamaño según lo necesites
-    combo_font1= pygame.font.Font(font_path, 18)  
+    combo_font1 = pygame.font.Font(font_path, 18)  
+
     # Variables de entrada
     input_text = ""
     active_screen = "input"  # Cambiará entre 'input' y 'animation'
@@ -34,7 +47,7 @@ def get_name():
     pygame.display.set_caption("Legend")
     
     # Cambiar el ícono de la ventana
-    icon_path = "logo/legend.png"  # Cambia esta ruta por tu archivo .ico
+    icon_path = resource_path("logo/legend.png")  # Usamos la función para obtener la ruta correcta
     try:
         icon = pygame.image.load(icon_path)
         pygame.display.set_icon(icon)
@@ -42,14 +55,12 @@ def get_name():
         print(f"No se encontró el ícono en {icon_path}. Se usará el predeterminado.")
 
     # Cargar el archivo MIDI desde la carpeta Song
-    pygame.mixer.music.load("Song/name.mp3")
+    pygame.mixer.music.load(resource_path("Song/name.mp3"))  # Usamos la función para obtener la ruta correcta
     # Reproducir el archivo
     pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
 
     # Rectángulos para entrada de texto y ComboBox
-    #input_rect = pygame.Rect(INPUT_WIDTH // 4, INPUT_HEIGHT // 3, INPUT_WIDTH // 2, 50)  # Campo para el nombre
     input_rect = pygame.Rect((INPUT_WIDTH // 2 - INPUT_WIDTH // 2 // 2, INPUT_HEIGHT // 3 - 25),(INPUT_WIDTH // 2, 50))
-    #combo_rect = pygame.Rect(INPUT_WIDTH // 4, INPUT_HEIGHT // 2 + 10, INPUT_WIDTH // 1.5, 50)  # ComboBox debajo del nombre
     combo_rect = pygame.Rect((INPUT_WIDTH // 2 - INPUT_WIDTH // 1.5 // 2, INPUT_HEIGHT // 2-25),(INPUT_WIDTH // 1.5, 50))
 
     combo_rects = []  # Listado de rectángulos de opciones para el ComboBox
@@ -68,7 +79,7 @@ def get_name():
             if active_screen == "input":  # Manejo de eventos para la pantalla de entrada
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:  # Si presiona Enter, retorna el nombre
-                        if input_text.strip():
+                        if input_text.strip():  # Si hay texto en el input
                             return input_text, combo_selected
                     elif event.key == pygame.K_BACKSPACE:  # Borra el último carácter
                         input_text = input_text[:-1]

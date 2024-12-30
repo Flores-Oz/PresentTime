@@ -2,6 +2,19 @@ import pygame
 import random
 import sys
 import time
+import os
+
+# Función para obtener la ruta de los recursos
+def resource_path(relative_path):
+    """Obtiene la ruta correcta al recurso, ya sea desde el archivo empaquetado o el directorio de trabajo."""
+    try:
+        # PyInstaller crea una carpeta temporal para los archivos en el directorio '_MEIPASS'
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")  # Si no está empaquetado, usa el directorio actual
+    
+    return os.path.join(base_path, relative_path)
+
 
 # Inicialización
 pygame.init()
@@ -23,7 +36,9 @@ stars = [
 # Cargar el archivo MIDI desde la carpeta Song
 def reproducir_musica():
     try:
-        pygame.mixer.music.load("Song/Decade.mid")
+        # Obtener la ruta absoluta del archivo MIDI usando la función resource_path
+        ruta_midi = resource_path("Song/Decade.mid")  # Usamos la función para obtener la ruta correcta
+        pygame.mixer.music.load(ruta_midi)
         pygame.mixer.music.play(-1)  # Repite indefinidamente
     except pygame.error as e:
         print(f"Error al cargar la música: {e}")
