@@ -70,17 +70,28 @@ def animate_name(name1, combo_value, width=800, height=800):
         print(f"No se encontró el ícono en {icon_path}. Se usará el predeterminado.")
 
     # Cargar el archivo MIDI desde la carpeta Song
-    pygame.mixer.music.load("Song/Decade.mid")
-    pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
+    #pygame.mixer.music.load("Song/Decade.mid")
+    #pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
 
     # Texto fijo para el nombre
     fixed_name = "Happy New Year"  # Este es el texto fijo que se va a mostrar
 
-    # Cargar la imagen
-    try:
-        image = pygame.image.load("img/Gato.png")
-    except pygame.error:
-        print("No se pudo cargar la imagen desde img/Gato.png.")
+    # Diccionario de imágenes basado en el valor del ComboBox
+    images = {
+        "Michi Town": "img/Gato.png",  # Ruta de la imagen para "Best Wishes"
+        "Culto de Paquito": "img/Pacolio.png",  # Ruta de la imagen para "Success"
+        "Love": "img/Love.png",  # Ruta de la imagen para "Love"
+    }
+
+    # Intentar cargar la imagen correspondiente según el valor del ComboBox
+    def cargar_imagen(combo_value):
+        try:
+            return pygame.image.load(images[combo_value])
+        except KeyError:
+            return None  # Si no se encuentra la clave, no se carga ninguna imagen
+
+    # Cargar la imagen inicial
+    image = cargar_imagen(combo_value)
 
     # Bucle principal
     state = "fixed_name"  # Estado inicial
@@ -122,23 +133,23 @@ def animate_name(name1, combo_value, width=800, height=800):
 
         # Mostrar el nombre fijo animado
         fixed_name_surface = font.render(fixed_name_text, True, WHITE)
-        fixed_name_rect = fixed_name_surface.get_rect(center=(800 // 2, 800 // 5))  # Más espacio arriba
+        fixed_name_rect = fixed_name_surface.get_rect(center=(800 // 2, 800 // 5))  # Ajusté más el espacio arriba
         screen.blit(fixed_name_surface, fixed_name_rect)
 
         # Mostrar el valor del ComboBox animado
         if state == "combo" or state == "name":
             combo_text_surface = combo_font.render(combo_text, True, WHITE)
-            combo_text_rect = combo_text_surface.get_rect(center=(800 // 2, 800 // 2.5))  # Más espacio arriba
+            combo_text_rect = combo_text_surface.get_rect(center=(800 // 2, 800 // 2.5))  # Más espacio
             screen.blit(combo_text_surface, combo_text_rect)
 
         # Mostrar el name1 animado
         if state == "name":
             name_text_surface = font.render(name_text, True, WHITE)
-            name_text_rect = name_text_surface.get_rect(center=(800 // 2, 800 // 1.75))  # Más espacio arriba
+            name_text_rect = name_text_surface.get_rect(center=(800 // 2, 800 // 1.75))  # Más espacio
             screen.blit(name_text_surface, name_text_rect)
 
         # Mostrar la imagen solo después de la animación
-        if image_shown:
+        if image_shown and image:
             image_rect = image.get_rect(center=(800 // 2, 800 // 1.25))  # Colocar la imagen más abajo
             screen.blit(image, image_rect)
 
@@ -146,4 +157,4 @@ def animate_name(name1, combo_value, width=800, height=800):
         clock.tick(60)
 
 # Ejecuta la animación
-animate_name("Name", "Best Wishes")
+#animate_name("Name", "Best Wishes")
