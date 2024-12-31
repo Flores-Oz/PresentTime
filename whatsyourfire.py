@@ -9,10 +9,9 @@ import time  # Necesario para controlar el tiempo
 def resource_path(relative_path):
     """Obtiene la ruta correcta al recurso en diferentes sistemas operativos y entornos."""
     try:
-        # Para aplicaciones empaquetadas, obtener la ruta del recurso dentro del paquete
         if hasattr(sys, '_MEIPASS'):
+            # PyInstaller crea un directorio temporal con los recursos empaquetados
             return os.path.join(sys._MEIPASS, relative_path)
-        # Para un entorno normal, usar la ruta relativa
         return os.path.join(os.path.dirname(__file__), relative_path)
     except Exception as e:
         print(f"Error al obtener la ruta del recurso: {e}")
@@ -72,7 +71,7 @@ audio_duration = pygame.mixer.Sound(resource_path("Song/Explosion.mp3")).get_len
 pygame.mixer.music.play(-1)  # -1 para que se repita indefinidamente
 
 # Calcular el tiempo total de animación (duración del audio + 10 segundos)
-animation_duration = audio_duration + 21
+animation_duration = audio_duration + 20
 start_time = time.time()  # Guardar el tiempo de inicio
 
 # Función de desvanecimiento (fade-out) para transición

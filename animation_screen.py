@@ -2,8 +2,7 @@ import pygame
 import sys
 import random
 import os
-import platform
-import subprocess 
+import subprocess
 import time
 
 # Función para obtener la ruta correcta de los recursos
@@ -18,6 +17,16 @@ def resource_path(relative_path):
     except Exception as e:
         print(f"Error al obtener la ruta del recurso: {e}")
         return relative_path
+
+# Función para ejecutar el script
+def ejecutar_script(script_name):
+    """Ejecuta el script especificado cuando se hace clic en el segundo botón."""
+    script_path = resource_path(script_name)  # Obtener la ruta correcta del script
+    try:
+        # Ejecutar el script .py (también funcionará si es empaquetado en .exe)
+        subprocess.Popen([sys.executable, script_path])  # Ejecutar el script usando el intérprete de Python
+    except Exception as e:
+        print(f"Error al ejecutar el script: {e}")
 
 # Configuración inicial
 pygame.init()
@@ -93,7 +102,8 @@ def animate_name(name1, combo_value, width=800, height=800):
     images = {
         "Michi Town": resource_path("img/Gato.png"),  # Usar resource_path para las rutas de las imágenes
         "Culto de Paquito": resource_path("img/Pacolio.png"),
-        "Love": resource_path("img/Love.png"),
+        "Lua Street": resource_path("img/Lua.png"),
+        "VerukaLive": resource_path("img/Veruka.png"),
     }
 
     # Intentar cargar la imagen correspondiente según el valor del ComboBox
@@ -122,48 +132,22 @@ def animate_name(name1, combo_value, width=800, height=800):
     image_shown = False  # Bandera para saber si mostrar la imagen
     button_shown = False  # Bandera para saber si mostrar el botón
     button_rect = pygame.Rect(50, 750, 200, 40)  # Botón en la parte inferior izquierda
-    button_rect1 = pygame.Rect(500, 750, 200, 40)  # Botón en la parte inferior izquierda
     ruta_texto = ""
     image_path = None
     ruta_mostrada_time = None  # Variable para controlar el tiempo que se muestra la ruta
-    
-    # Función para la transición de fade out
-    def fade_out(width=800, height=800):
-           fade_surface = pygame.Surface((width, height))
-           fade_surface.fill((0, 0, 0))  # Pantalla negra para el fade
-           alpha = 0
-           while alpha < 255:  # Aumenta la opacidad hasta 255
-                  alpha += 5
-                  fade_surface.set_alpha(alpha)
-                  screen.blit(fade_surface, (0, 0))
-                  pygame.display.flip()
-                  pygame.time.delay(20)  # Controla la velocidad del fade
-    
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-            # Detectar clic en el botón
+            # Detectar clic en el botón 1 (guardar imagen)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if button_rect.collidepoint(event.pos):
                     image_path = guardar_imagen_en_escritorio()  # Guardar la imagen cuando se hace clic en el botón
                     ruta_texto = f"Imagen guardada en: {image_path}"
                     ruta_mostrada_time = pygame.time.get_ticks()  # Establecer el tiempo de cuando se mostró la ruta
-                    
-              # Detectar clic en el segundo botón (para la transición)
-            if event.type == pygame.MOUSEBUTTONDOWN:
-               if button_rect1.collidepoint(event.pos):
-                   # Transición suave (fade out)
-                  fade_out()
-            
-                   # Cerrar la ventana actual
-                  pygame.quit()
-                  # Ejecutar el script de fuegos artificiales
-                  subprocess.Popen([sys.executable, "whatsyourfire.py"])
-                  sys.exit()
-
 
         # Actualiza tiempo y texto
         current_time = pygame.time.get_ticks()
@@ -224,27 +208,15 @@ def animate_name(name1, combo_value, width=800, height=800):
             button_text_rect = button_text.get_rect(center=button_rect.center)
             screen.blit(button_text, button_text_rect)
             
-        # Mostrar la ruta donde se guardó la imagen (y desaparecerla después de 3 segundos)
-        if image_path and ruta_mostrada_time:
+        # Mostrar la ruta donde se guardó la imagen
+        if image_path:
             # Mostrar la ruta
             ruta_surface = font1.render(ruta_texto, True, WHITE)
             ruta_rect = ruta_surface.get_rect(center=(800 // 2, 750))  # Ajuste de la posición de la ruta
             screen.blit(ruta_surface, ruta_rect)
 
-            # Eliminar mensaje después de 3 segundos
-            if current_time - ruta_mostrada_time >= 3000:  # 3000 milisegundos = 3 segundos
-                ruta_texto = ""
-                ruta_mostrada_time = None
-        
-        # Mostrar el botón solo después de la animación
-        if button_shown:
-            # Dibujar solo el texto del botón, sin fondo
-            button_text = pygame.font.Font(font_path, 36).render("Ver Juegos Artificiales", True, (255, 255, 255))
-            button_text_rect = button_text.get_rect(center=button_rect1.center)
-            screen.blit(button_text, button_text_rect)
-
         pygame.display.flip()
         clock.tick(60)
-
-# Ejecuta la animación
-# animate_name("Oscar", "Best Wishes")
+        
+        # Ejecuta la animación
+animate_name("Oscar", "VerukaLive")

@@ -4,14 +4,16 @@ import os
 
 # Función para obtener la ruta de los recursos
 def resource_path(relative_path):
-    """Obtiene la ruta correcta al recurso, ya sea desde el archivo empaquetado o el directorio de trabajo."""
+    """Obtiene la ruta correcta al recurso en diferentes sistemas operativos y entornos."""
     try:
-        # PyInstaller crea una carpeta temporal para los archivos en el directorio '_MEIPASS'
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")  # Si no está empaquetado, usa el directorio actual
-    
-    return os.path.join(base_path, relative_path)
+        # Para aplicaciones empaquetadas, obtener la ruta del recurso dentro del paquete
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relative_path)
+        # Para un entorno normal, usar la ruta relativa
+        return os.path.join(os.path.dirname(__file__), relative_path)
+    except Exception as e:
+        print(f"Error al obtener la ruta del recurso: {e}")
+        return relative_path
 
 # Función para obtener el nombre desde la pantalla de entrada
 def get_name():
